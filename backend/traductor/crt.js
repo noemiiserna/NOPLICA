@@ -10,7 +10,7 @@ function formatCRTConditionToSQL(condition) {
 function crtToSQL(query) {
   const cleanQuery = query.trim();
 
-  // Caso 1:
+  // Caso 1
   const simpleMatch = cleanQuery.match(
     /^\{\s*(t\.[\wÁÉÍÓÚáéíóúÑñ_]+(?:\s*,\s*t\.[\wÁÉÍÓÚáéíóúÑñ_]+)*)\s*\|\s*([\wÁÉÍÓÚáéíóúÑñ_]+)\s*\(t\)\s*\}$/
   );
@@ -24,9 +24,7 @@ function crtToSQL(query) {
 
     return `SELECT DISTINCT ${attributes.join(", ")} FROM ${table};`;
   }
-// Caso EXISTS
-// { t.nombre | ciclista(t) ∧ ∃e (etapa(e) ∧ e.dorsal = t.dorsal) }
-
+// Caso 2: EXISTS
 const existsMatch = cleanQuery.match(
   /^\{\s*(t\.[\wÁÉÍÓÚáéíóúÑñ_]+(?:\s*,\s*t\.[\wÁÉÍÓÚáéíóúÑñ_]+)*)\s*\|\s*([\wÁÉÍÓÚáéíóúÑñ_]+)\s*\(t\)\s*∧\s*∃e\s*\(([\wÁÉÍÓÚáéíóúÑñ_]+)\s*\(e\)\s*∧\s*e\.([\wÁÉÍÓÚáéíóúÑñ_]+)\s*=\s*t\.([\wÁÉÍÓÚáéíóúÑñ_]+)\s*\)\s*\}$/
 );
@@ -44,9 +42,7 @@ if (existsMatch) {
   return `SELECT DISTINCT ${attributes.join(", ")} FROM ${mainTable} C WHERE EXISTS (SELECT * FROM ${subTable} E WHERE E.${subField} = C.${mainField});`;
 }
 
-  // Caso 2:
-  // NOT EXISTS
-
+  // Caso 3: NOT EXITS
   const notExistsMatch = cleanQuery.match(
     /^\{\s*(t\.[\wÁÉÍÓÚáéíóúÑñ_]+(?:\s*,\s*t\.[\wÁÉÍÓÚáéíóúÑñ_]+)*)\s*\|\s*([\wÁÉÍÓÚáéíóúÑñ_]+)\s*\(t\)\s*∧\s*¬∃e\s*\(([\wÁÉÍÓÚáéíóúÑñ_]+)\s*\(e\)\s*∧\s*e\.([\wÁÉÍÓÚáéíóúÑñ_]+)\s*=\s*t\.([\wÁÉÍÓÚáéíóúÑñ_]+)\s*\)\s*\}$/
   );
@@ -64,14 +60,7 @@ if (existsMatch) {
     return `SELECT ${attributes.join(", ")} FROM ${mainTable} C WHERE NOT EXISTS (SELECT * FROM ${subTable} E WHERE E.${subField} = C.${mainField});`;
   }
 
-  // Caso 3:
-  // Consulta con dos tablas y condición de unión.
-
-// Caso 2:
-// Consulta con dos tablas y condición de unión.
-// Acepta:
-// { t.nombre, u.director | ciclista(t) ∧ equipo(u) ∧ t.nomeq = u.nomeq }
-// { nombre, director | ciclista(ciclista) ∧ equipo(equipo) ∧ ciclista.nomeq = equipo.nomeq }
+  // Caso 4: Consulta con dos tablas y condición de unión.
 
 const joinSelectionMatch = cleanQuery.match(
   /^\{\s*([\wÁÉÍÓÚáéíóúÑñ_.]+(?:\s*,\s*[\wÁÉÍÓÚáéíóúÑñ_.]+)*)\s*\|\s*([\wÁÉÍÓÚáéíóúÑñ_]+)\s*\(([\wÁÉÍÓÚáéíóúÑñ_]+)\)\s*∧\s*([\wÁÉÍÓÚáéíóúÑñ_]+)\s*\(([\wÁÉÍÓÚáéíóúÑñ_]+)\)\s*∧\s*(.+)\s*\}$/
@@ -99,7 +88,7 @@ if (joinSelectionMatch) {
   return `SELECT DISTINCT ${attributes.join(", ")} FROM ${leftTable} ${leftAlias}, ${rightTable} ${rightAlias} WHERE ${sqlCondition};`;
 }
 
-  // Caso 3:
+  // Caso 5:
   const selectionMatch = cleanQuery.match(
     /^\{\s*(t\.[\wÁÉÍÓÚáéíóúÑñ_]+(?:\s*,\s*t\.[\wÁÉÍÓÚáéíóúÑñ_]+)*)\s*\|\s*([\wÁÉÍÓÚáéíóúÑñ_]+)\s*\(t\)\s*∧\s*(.+)\s*\}$/
   );
@@ -117,7 +106,7 @@ if (joinSelectionMatch) {
     return `SELECT DISTINCT ${attributes.join(", ")} FROM ${table} WHERE ${sqlCondition};`;
   }
 
-  // Caso 4:
+  // Caso 6:
   const tupleSelectionMatch = cleanQuery.match(
     /^\{\s*t\s*\|\s*([\wÁÉÍÓÚáéíóúÑñ_]+)\s*\(t\)\s*∧\s*(.+)\s*\}$/
   );
@@ -131,7 +120,7 @@ if (joinSelectionMatch) {
     return `SELECT * FROM ${table} WHERE ${sqlCondition};`;
   }
 
-  // Caso 5:
+  // Caso 7:
   const setOperationMatch = cleanQuery.match(
     /^\{\s*t\s*\|\s*([\wÁÉÍÓÚáéíóúÑñ_]+)\s*\(t\)\s*(∨|∧)\s*([\wÁÉÍÓÚáéíóúÑñ_]+)\s*\(t\)\s*\}$/
   );
@@ -150,7 +139,7 @@ if (joinSelectionMatch) {
     }
   }
 
-  // Caso 6:
+  // Caso 7:
   const cartesianMatch = cleanQuery.match(
     /^\{\s*t\s*,\s*u\s*\|\s*([\wÁÉÍÓÚáéíóúÑñ_]+)\s*\(t\)\s*∧\s*([\wÁÉÍÓÚáéíóúÑñ_]+)\s*\(u\)\s*\}$/
   );
