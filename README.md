@@ -6,12 +6,11 @@ NOPLICA es una aplicación web desarrollada como Trabajo Fin de Grado en Ingenie
 
 La aplicación permite:
 
-- Traducir consultas de Álgebra Relacional (AR) a Cálculo Relacional de Tuplas (CR) y SQL.
-- Traducir consultas de Cálculo Relacional de Tuplas (CR) a SQL.
+- Traducir consultas de Álgebra Relacional (AR) a Cálculo Relacional de Tuplas (CRT) y SQL.
+- Traducir consultas de Cálculo Relacional de Tuplas (CRt) a SQL.
 - Ejecutar consultas SQL sobre una base de datos MySQL.
 - Visualizar el resultado obtenido de forma inmediata.
 
----
 
 ## Tecnologías utilizadas
 
@@ -33,7 +32,6 @@ La aplicación permite:
 - Docker
 - Docker Compose
 
----
 
 ## Requisitos
 
@@ -207,7 +205,7 @@ En el caso del Álgebra Relacional y del Cálculo Relacional de Tuplas, la aplic
 
 ## Autora
 
-Noemí XXXXX XXXXX
+Noemí Serna Martín
 
 Trabajo Fin de Grado
 
