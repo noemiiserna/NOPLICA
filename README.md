@@ -7,89 +7,116 @@ NOPLICA es una aplicación web desarrollada como Trabajo Fin de Grado en Ingenie
 La aplicación permite:
 
 - Traducir consultas de Álgebra Relacional (AR) a Cálculo Relacional de Tuplas (CRT) y SQL.
-- Traducir consultas de Cálculo Relacional de Tuplas (CRt) a SQL.
+- Traducir consultas de Cálculo Relacional de Tuplas (CRT) a SQL.
 - Ejecutar consultas SQL sobre una base de datos MySQL.
-- Visualizar el resultado obtenido de forma inmediata.
+- Visualizar de forma inmediata tanto la traducción como el resultado de la consulta.
 
+---
 
-## Tecnologías utilizadas
+# Tecnologías utilizadas
 
-### Frontend
+## Frontend
 
 - React
 - Vite
 - JavaScript
 - CSS
 
-### Backend
+## Backend
 
 - Node.js
 - Express
 - mysql2
 
-### Despliegue
+## Despliegue
 
 - Docker
 - Docker Compose
 
+---
 
-## Requisitos
+# Requisitos
 
-Es necesario disponer de:
+Para ejecutar la aplicación es necesario disponer de:
 
 - Docker Desktop
 - MySQL 8.x
 
-## Instalación
+---
+
+# Instalación
 
 Clonar el repositorio:
 
 ```bash
-git clone https://github.com/USUARIO/NOPLICA.git
+git clone https://github.com/noemiiserna/NOPLICA.git
 cd NOPLICA
 ```
 
 ---
 
-## Ejecución
+# Ejecución
 
-Con Docker Desktop iniciado, ejecutar:
+## 1. Iniciar Docker Desktop
+
+Es imprescindible que Docker Desktop esté abierto y en ejecución antes de iniciar la aplicación.
+
+## 2. Levantar los contenedores
+
+Desde la carpeta raíz del proyecto ejecutar:
 
 ```bash
 docker-compose up --build
 ```
 
-La aplicación estará disponible en:
+La primera ejecución puede tardar unos minutos mientras Docker descarga las dependencias necesarias.
+
+Una vez finalizada, aparecerán mensajes similares a:
 
 ```
-Frontend:
+Servidor en http://localhost:5000
+
+VITE ready
+
+http://localhost:5173
+```
+
+## 3. Abrir la aplicación
+
+Acceder desde el navegador a:
+
+```
+Frontend
 http://localhost:5173
 
-Backend:
+Backend
 http://localhost:5000
 ```
 
 ---
 
-## Base de datos de prueba
+# Base de datos de prueba
 
 En la carpeta:
 
 ```
-database/
+BD/
 ```
 
 se proporciona la base de datos **ciclismo.sql** utilizada durante el desarrollo del proyecto.
 
-Importarla previamente en MySQL.
+Debe importarse previamente en MySQL antes de utilizar la aplicación.
 
 ---
 
-## Conexión a la base de datos
+# Conexión a la base de datos
 
-Una vez iniciada la aplicación, pulsar el botón **Conectar BD** e introducir los datos de conexión.
+Una vez iniciada la aplicación:
 
-Ejemplo:
+1. Pulsar el botón **Conectar BD**.
+2. Introducir los datos de conexión correspondientes a la base de datos.
+
+Ejemplo de configuración:
 
 ```
 Host:
@@ -110,11 +137,11 @@ ciclismo
 
 ---
 
-## Funcionalidades implementadas
+# Funcionalidades implementadas
+
+## Álgebra Relacional
 
 La aplicación soporta:
-
-### Álgebra Relacional
 
 - Proyección (π)
 - Selección (σ)
@@ -133,24 +160,27 @@ La aplicación soporta:
 - EXISTS
 - NOT EXISTS
 
-### Cálculo Relacional de Tuplas
+## Cálculo Relacional de Tuplas
+
+La aplicación soporta:
 
 - Traducción a SQL
 - Operadores lógicos
-- Consultas sobre una o dos relaciones
+- Consultas sobre una relación
+- Consultas sobre dos relaciones
 - EXISTS
 - NOT EXISTS
 
-### SQL
+## SQL
 
-- Ejecución directa sobre MySQL
-- Visualización de resultados
+- Ejecución directa sobre MySQL.
+- Visualización de resultados.
 
 ---
 
-## Ejemplos de consultas
+# Ejemplos de consultas
 
-### Álgebra Relacional
+## Álgebra Relacional
 
 ```text
 π nombre (σ edad >= 25 (ciclista))
@@ -168,9 +198,7 @@ La aplicación soporta:
 π nombre (NOT EXISTS etapa (ciclista))
 ```
 
----
-
-### Cálculo Relacional
+## Cálculo Relacional de Tuplas
 
 ```text
 { t.nombre | ciclista(t) ∧ t.edad >= 25 }
@@ -180,9 +208,7 @@ La aplicación soporta:
 { nombre, director | ciclista(ciclista) ∧ equipo(equipo) ∧ ciclista.nomeq = equipo.nomeq }
 ```
 
----
-
-### SQL
+## SQL
 
 ```sql
 SELECT nombre
@@ -192,20 +218,23 @@ WHERE edad >= 25;
 
 ---
 
-## Notas
+# Notas
 
-Las consultas SQL son procesadas directamente por MySQL, por lo que la aplicación puede ejecutar cualquier consulta SQL válida soportada por dicho SGBD.
-
-En el caso del Álgebra Relacional y del Cálculo Relacional de Tuplas, la aplicación implementa un traductor propio basado en un conjunto de operadores y patrones representativos, suficientes para cubrir los casos de uso contemplados en el proyecto.
+- La aplicación utiliza una arquitectura cliente-servidor desplegada mediante Docker.
+- Es imprescindible que Docker Desktop permanezca abierto mientras se utiliza la aplicación.
+- Las consultas SQL son enviadas directamente al sistema gestor de bases de datos MySQL, que es el encargado de validarlas y ejecutarlas.
+- Las traducciones de Álgebra Relacional y Cálculo Relacional de Tuplas son realizadas por un traductor propio implementado específicamente para este proyecto y soportan un conjunto representativo de operadores y patrones orientados a un contexto docente.
 
 ---
 
-## Autora
+# Autora
 
-Noemí Serna Martín
+**Noemí Serna Martín**
 
 Trabajo Fin de Grado
 
 Grado en Ingeniería Informática
+
+Escuela Universitaria Politécnica de Teruel
 
 Universidad de Zaragoza
