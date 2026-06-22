@@ -21,7 +21,7 @@ function parseAggregationAR(query) {
   }
 
   // Caso 2:
-  // Agrupación simple sobre una tabla)
+  // Agrupación simple sobre una tabla
 
   const match = query.match(
     /^γ\s*([\wÁÉÍÓÚáéíóúÑñ_]+)?\s*;\s*(COUNT|MIN|MAX|AVG|SUM)\((\*|[\wÁÉÍÓÚáéíóúÑñ_]+)\)\s*→\s*([\wÁÉÍÓÚáéíóúÑñ_]+)\s+\(([\wÁÉÍÓÚáéíóúÑñ_]+)\)$/i
@@ -55,7 +55,7 @@ function formatConditionForSQL(condition) {
 }
 
 function treeToSQL(tree) {
-  // Caso 1: agrupación sobre dos tablas con HAVING
+  // Caso 3: agrupación sobre dos tablas con HAVING
   if (tree.type === "aggregationJoinHaving") {
     const condition = formatConditionForSQL(tree.condition);
     const having = formatConditionForSQL(tree.having);
@@ -63,7 +63,7 @@ function treeToSQL(tree) {
     return `SELECT ${tree.groupBy}, ${tree.functionName}(${tree.attribute}) AS ${tree.alias} FROM ${tree.leftTable}, ${tree.rightTable} WHERE ${condition} GROUP BY ${tree.groupBy} HAVING ${having};`;
   }
 
-  // Caso 2: agrupación simple
+  // Caso 4: agrupación simple
   if (tree.groupBy) {
     return `SELECT ${tree.groupBy}, ${tree.functionName}(${tree.attribute}) AS ${tree.alias} FROM ${tree.table} GROUP BY ${tree.groupBy};`;
   }
