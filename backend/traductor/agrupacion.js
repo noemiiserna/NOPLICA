@@ -2,9 +2,7 @@ function parseAggregationAR(query) {
 
   // Caso 1:
   // Agrupación sobre dos tablas con selección previa y cláusula HAVING.
-  // Ejemplo:
-  // γ nomeq ; COUNT(netapa) → total HAVING COUNT(netapa) > 2
-  // (σ etapa.dorsal = ciclista.dorsal (etapa × ciclista))
+
 
   const joinHavingMatch = query.match(
     /^γ\s+([\wÁÉÍÓÚáéíóúÑñ_]+)\s*;\s*(COUNT|MIN|MAX|AVG|SUM)\((\*|[\wÁÉÍÓÚáéíóúÑñ_]+)\)\s*→\s*([\wÁÉÍÓÚáéíóúÑñ_]+)\s+HAVING\s+(.+)\s+\(σ\s+(.+)\s+\(([\wÁÉÍÓÚáéíóúÑñ_]+)\s*×\s*([\wÁÉÍÓÚáéíóúÑñ_]+)\)\)$/i
@@ -26,8 +24,7 @@ function parseAggregationAR(query) {
 
   // Caso 2:
   // Agrupación simple sobre una única tabla.
-  // Ejemplo:
-  // γ nomeq ; COUNT(*) → num_ciclistas (ciclista)
+  
 
   const match = query.match(
     /^γ\s*([\wÁÉÍÓÚáéíóúÑñ_]+)?\s*;\s*(COUNT|MIN|MAX|AVG|SUM)\((\*|[\wÁÉÍÓÚáéíóúÑñ_]+)\)\s*→\s*([\wÁÉÍÓÚáéíóúÑñ_]+)\s+\(([\wÁÉÍÓÚáéíóúÑñ_]+)\)$/i
@@ -48,7 +45,6 @@ function parseAggregationAR(query) {
 }
 
 function treeToCRT() {
-  // La agrupación no dispone de una traducción estándar a Cálculo Relacional de Tuplas.
   return "La agrupación no tiene una traducción directa estándar a CR básico.";
 }
 
