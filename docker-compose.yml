@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+
+# Hemos añadido la parte de volumes en los dos, para que asi se vayan guardando los cambios que hagamos en el front y end,
+# porque sino de la oyra forma cada vez que cambiase algo tendria que hacer docker compose up --build
