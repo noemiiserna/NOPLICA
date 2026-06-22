@@ -1,6 +1,10 @@
 function parseAggregationAR(query) {
+
   // Caso 1:
-  // Agrupación con selección sobre dos tablas y HAVING
+  // Agrupación sobre dos tablas con selección previa y cláusula HAVING.
+  // Ejemplo:
+  // γ nomeq ; COUNT(netapa) → total HAVING COUNT(netapa) > 2
+  // (σ etapa.dorsal = ciclista.dorsal (etapa × ciclista))
 
   const joinHavingMatch = query.match(
     /^γ\s+([\wÁÉÍÓÚáéíóúÑñ_]+)\s*;\s*(COUNT|MIN|MAX|AVG|SUM)\((\*|[\wÁÉÍÓÚáéíóúÑñ_]+)\)\s*→\s*([\wÁÉÍÓÚáéíóúÑñ_]+)\s+HAVING\s+(.+)\s+\(σ\s+(.+)\s+\(([\wÁÉÍÓÚáéíóúÑñ_]+)\s*×\s*([\wÁÉÍÓÚáéíóúÑñ_]+)\)\)$/i
@@ -21,7 +25,9 @@ function parseAggregationAR(query) {
   }
 
   // Caso 2:
-  // Agrupación simple sobre una tabla
+  // Agrupación simple sobre una única tabla.
+  // Ejemplo:
+  // γ nomeq ; COUNT(*) → num_ciclistas (ciclista)
 
   const match = query.match(
     /^γ\s*([\wÁÉÍÓÚáéíóúÑñ_]+)?\s*;\s*(COUNT|MIN|MAX|AVG|SUM)\((\*|[\wÁÉÍÓÚáéíóúÑñ_]+)\)\s*→\s*([\wÁÉÍÓÚáéíóúÑñ_]+)\s+\(([\wÁÉÍÓÚáéíóúÑñ_]+)\)$/i
@@ -42,6 +48,7 @@ function parseAggregationAR(query) {
 }
 
 function treeToCRT() {
+  // La agrupación no dispone de una traducción estándar a Cálculo Relacional de Tuplas.
   return "La agrupación no tiene una traducción directa estándar a CR básico.";
 }
 
@@ -55,7 +62,11 @@ function formatConditionForSQL(condition) {
 }
 
 function treeToSQL(tree) {
-  // Caso 3: agrupación sobre dos tablas con HAVING
+
+  // Caso 1:
+  // Generación de SQL para una agrupación sobre dos tablas
+  // con selección previa y cláusula HAVING.
+
   if (tree.type === "aggregationJoinHaving") {
     const condition = formatConditionForSQL(tree.condition);
     const having = formatConditionForSQL(tree.having);
@@ -63,10 +74,15 @@ function treeToSQL(tree) {
     return `SELECT ${tree.groupBy}, ${tree.functionName}(${tree.attribute}) AS ${tree.alias} FROM ${tree.leftTable}, ${tree.rightTable} WHERE ${condition} GROUP BY ${tree.groupBy} HAVING ${having};`;
   }
 
-  // Caso 4: agrupación simple
+  // Caso 2:
+  // Generación de SQL para una agrupación simple con GROUP BY.
+
   if (tree.groupBy) {
     return `SELECT ${tree.groupBy}, ${tree.functionName}(${tree.attribute}) AS ${tree.alias} FROM ${tree.table} GROUP BY ${tree.groupBy};`;
   }
+
+  // Caso 3:
+  // Generación de SQL para una función de agregación sin GROUP BY.
 
   return `SELECT ${tree.functionName}(${tree.attribute}) AS ${tree.alias} FROM ${tree.table};`;
 }
