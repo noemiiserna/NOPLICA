@@ -1,14 +1,6 @@
-/*
- * Traducción de consultas con proyección y selección.
- *
- * Caso 0: proyección + selección con agregación MIN/MAX.
- * Caso NOT EXISTS: ciclistas que no han ganado etapas.
- * Caso 1: proyección + selección sobre una tabla.
- * Caso 2: proyección + selección sobre producto cartesiano de dos tablas.
- */
 
 function parseProjectionSelectionAR(query) {
-  // Caso 0: π atributos (σ campo = alias (tabla × γ ; MIN(campo) → alias (tabla)))
+  // Caso 0
   const matchMinAggregation = query.match(
     /^π\s+([\wÁÉÍÓÚáéíóúÑñ_\s,]+)\s+\(σ\s+([\wÁÉÍÓÚáéíóúÑñ_]+)\s*=\s*([\wÁÉÍÓÚáéíóúÑñ_]+)\s+\(([\wÁÉÍÓÚáéíóúÑñ_]+)\s*×\s*γ\s*;\s*(MIN|MAX)\(([\wÁÉÍÓÚáéíóúÑñ_]+)\)\s*→\s*([\wÁÉÍÓÚáéíóúÑñ_]+)\s+\(([\wÁÉÍÓÚáéíóúÑñ_]+)\)\)\)$/
   );
@@ -31,8 +23,7 @@ function parseProjectionSelectionAR(query) {
     };
   }
 
-  // Caso NOT EXISTS:
-  // π nombre (NOT EXISTS etapa (ciclista))
+  // Caso NOT EXISTS
   const matchNotExists = query.match(
     /^π\s+([\wÁÉÍÓÚáéíóúÑñ_\s,]+)\s+\(NOT EXISTS\s+([\wÁÉÍÓÚáéíóúÑñ_]+)\s+\(([\wÁÉÍÓÚáéíóúÑñ_]+)\)\)$/
   );
@@ -50,8 +41,6 @@ function parseProjectionSelectionAR(query) {
       joinField: "dorsal"
     };
   }
-
-  // Caso 1: π atributos (σ condicion (tabla))
   const matchOneTable = query.match(
     /^π\s+([\wÁÉÍÓÚáéíóúÑñ_\s,]+)\s+\(σ\s+(.+)\s+\(([\wÁÉÍÓÚáéíóúÑñ_]+)\)\)$/
   );
@@ -75,7 +64,6 @@ function parseProjectionSelectionAR(query) {
     };
   }
 
-  // Caso 2: π atributos (σ condicion (tabla1 × tabla2))
   const matchTwoTables = query.match(
     /^π\s+([\wÁÉÍÓÚáéíóúÑñ_\s,]+)\s+\(σ\s+(.+)\s+\(([\wÁÉÍÓÚáéíóúÑñ_]+)\s*×\s*([\wÁÉÍÓÚáéíóúÑñ_]+)\)\)$/
   );
