@@ -211,9 +211,14 @@ La aplicación soporta:
 ## SQL
 
 ```sql
-SELECT nombre
-FROM ciclista
-WHERE edad >= 25;
+SELECT distinct e.nomeq, e.director
+FROM equipo e, ciclista c
+WHERE e.nomeq = c.nomeq
+GROUP BY e.nomeq, e.director
+HAVING AVG (EDAD) <= ALL (select avg(edad)
+FROM equipo e, ciclista c   WHERE e.nomeq = c.nomeq   GROUP BY e.nomeq)
+
+
 ```
 
 ---
