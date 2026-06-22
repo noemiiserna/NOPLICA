@@ -39,9 +39,6 @@ Es necesario disponer de:
 
 - Docker Desktop
 - MySQL 8.x
-- Git
-
----
 
 ## Instalación
 
